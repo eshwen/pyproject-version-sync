@@ -19,7 +19,7 @@ align_pyproject_version = "pyproject_version_check.align_pyproject_version:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-tomli = "^2.0.1"
+tomli = "~2.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
