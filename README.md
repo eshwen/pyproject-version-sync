@@ -27,3 +27,15 @@ Or, to enable autofix:
       - id: pyproject-version-check
         args: [--fix]
 ```
+
+### Examples
+
+With the default arguments:
+
+![default](https://github.com/eshwen/pyproject-version-check/assets/24566108/280ab0e5-df54-4f5d-a91f-698e84ff8335)
+
+With autofix:
+
+![fix](https://github.com/eshwen/pyproject-version-check/assets/24566108/939d65b5-20ed-4d53-97c7-784b4999aa37)
+
+(Styling shamelessly nicked from <https://github.com/ines/termynal>. Check out that repo for cool terminal animations!)
