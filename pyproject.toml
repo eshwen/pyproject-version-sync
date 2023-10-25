@@ -14,7 +14,7 @@ readme = "README.md"
 
 
 [tool.poetry.scripts]
-sync_pyproject_version = "pyproject_version_sync.align_pyproject_version:main"
+sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:main"
 
 
 [tool.poetry.dependencies]
