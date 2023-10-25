@@ -1,10 +1,10 @@
-# pyproject-version-check
+# pyproject-version-sync
 
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-31012/)
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 
-Pre-commit hook to align the pyproject.toml version with the latest tag in the repo.
+Pre-commit hook to sync the pyproject.toml version to the latest tag in the repo.
 
 ## Usage
 
@@ -12,19 +12,19 @@ To flag whether the latest tag in the repo matches the version in the `pyproject
 your `.pre-commit-config.yaml`:
 
 ```yaml
-  - repo: https://github.com/eshwen/pyproject-version-check
+  - repo: https://github.com/eshwen/pyproject-version-sync
     rev: v0.1.0
     hooks:
-      - id: pyproject-version-check
+      - id: pyproject-version-sync
 ```
 
 Or, to enable autofix:
 
 ```yaml
-  - repo: https://github.com/eshwen/pyproject-version-check
+  - repo: https://github.com/eshwen/pyproject-version-sync
     rev: v0.1.0
     hooks:
-      - id: pyproject-version-check
+      - id: pyproject-version-sync
         args: [--fix]
 ```
 
@@ -32,7 +32,7 @@ Or, to enable autofix:
 
 With the default arguments:
 
-![default](https://github.com/eshwen/pyproject-version-check/assets/24566108/f04f16ab-069f-4ebf-bec6-cfee77a5bf9c)
+![default](https://github.com/eshwen/pyproject-version-sync/assets/24566108/f04f16ab-069f-4ebf-bec6-cfee77a5bf9c)
 
 With autofix:
 

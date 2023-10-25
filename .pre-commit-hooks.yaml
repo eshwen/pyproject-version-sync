@@ -1,6 +1,6 @@
-- id: pyproject-version-check
-  name: pyproject-version-check
+- id: pyproject-version-sync
+  name: pyproject-version-sync
   description: Checks that the project version in pyproject.toml is aligned with the repository tag
-  entry: align_pyproject_version
+  entry: sync_pyproject_version
   language: python
   files: ^pyproject\.toml$
