@@ -1,0 +1,159 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+name = "pyproject-version-check"
+version = "0.1.0"
+description = "Pre-commit hook to align the pyproject.toml version with the latest tag in the repo."
+authors = [
+    "Eshwen Bhal, PhD <milanman.eshb@gmail.com>"
+]
+readme = "README.md"
+
+
+[tool.poetry.scripts]
+align_pyproject_version = "pyproject_version_check.align_pyproject_version:main"
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tomli = "^2.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "~23.7.0"
+mypy = "~1.5.1"
+ruff = "~0.1.1"
+pre-commit = "~3.3.3"
+
+
+[tool.black]
+target-version = ['py310']
+line-length = 120
+
+
+[tool.ruff]
+line-length = 120
+
+select = [
+    "I",
+    "D",
+    "E",
+    "F",
+    "W",
+    "C90",
+    "N",
+    "UP",
+    "S",
+    "BLE",
+    "FBT",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "T10",
+    "EM",
+    "EXE",
+    "ISC",
+    "ICN",
+    "G",
+    "INP",
+    "PIE",
+    "T20",
+    "PT",
+    "Q",
+    "RET",
+    "SIM",
+    "TID",
+    "ARG",
+    "PTH",
+    "ERA",
+    "PD",
+    "PGH",
+    "PL",
+    "PLC",
+    "PLE",
+    "PLR",
+    "PLW",
+    "TRY",
+    "RUF"
+]
+
+ignore = [
+    "E999",
+    "D301",
+    "D212",
+    "D107",
+    "D407",
+    "D203",
+    "PGH003",
+    "A003",
+    "N805",
+    "ARG002",
+    "PD901",
+    "ARG001",
+    "G004",
+    "EM101",
+    "TRY003",
+    "EM102",
+    "B008",
+    "FBT002",
+    "FBT001"
+]
+
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "venv",
+    "node_modules",
+    ".git",
+    "__pycache__",
+]
+
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401", "D104"]
+
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+
+[tool.mypy]
+python_version = "3.10"
+pretty = true
+show_traceback = true
+color_output = true
+allow_redefinition = false
+check_untyped_defs = true
+disallow_any_generics = true
+allow_untyped_defs = false
+allow_incomplete_defs = false
+ignore_missing_imports = true
+disable_error_code = "type-arg"
+implicit_reexport = true
+no_implicit_optional = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_equality = true
+strict_optional = false
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = false
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
