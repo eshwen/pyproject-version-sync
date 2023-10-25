@@ -37,3 +37,5 @@ With the default arguments:
 With autofix:
 
 ![fix](https://github.com/eshwen/pyproject-version-check/assets/24566108/939d65b5-20ed-4d53-97c7-784b4999aa37)
+
+(Styling shamelessly nicked from <https://github.com/ines/termynal>. Check out that repo for cool terminal animations!)
