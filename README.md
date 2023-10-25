@@ -32,10 +32,10 @@ Or, to enable autofix:
 
 With the default arguments:
 
-![default](https://github.com/eshwen/pyproject-version-check/assets/24566108/280ab0e5-df54-4f5d-a91f-698e84ff8335)
+![default](https://github.com/eshwen/pyproject-version-check/assets/24566108/f04f16ab-069f-4ebf-bec6-cfee77a5bf9c)
 
 With autofix:
 
-![fix](https://github.com/eshwen/pyproject-version-check/assets/24566108/939d65b5-20ed-4d53-97c7-784b4999aa37)
+![fix](https://github.com/eshwen/pyproject-version-check/assets/24566108/88fe1e2c-0a15-416c-8108-dbb756783c8d)
 
 (Styling shamelessly nicked from <https://github.com/ines/termynal>. Check out that repo for cool terminal animations!)
