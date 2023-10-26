@@ -1,15 +1,11 @@
 """This pre-commit hook ensures that the version in pyproject.toml matches the latest git tag."""
 import argparse
-import logging
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 import tomli
-
-LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
-LOGGER.addHandler(logging.StreamHandler())
 
 
 def _execute_in_shell(cmd: str) -> subprocess.CompletedProcess:
@@ -119,13 +115,15 @@ def main() -> None:
 
     if version_pyproject != (version_git := find_latest_tag()):
         if not fix:
-            raise ValueError(
+            sys.exit(
                 f"In pyproject.toml, found tool.poetry.version = {version_pyproject}. Expected {version_git}. "
-                f"Run with the `--fix` option to automatically update.",
+                f"Run with the `--fix` option to automatically sync.",
             )
 
-        LOGGER.info("Updating version in pyproject.toml to match latest git tag.")
         write_new_version_to_toml(toml_file, version_pyproject, version_git)
+        sys.exit("Syncing version in pyproject.toml to match latest git tag.")
+
+    sys.exit()
 
 
 if __name__ == "__main__":
