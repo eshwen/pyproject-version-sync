@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "pyproject-version-sync"
-version = "0.2.0"
+version = "0.2.1"
 description = "Pre-commit hook to align the pyproject.toml version to the latest tag in the repo."
 authors = [
     "Eshwen Bhal, PhD <milanman.eshb@gmail.com>"
