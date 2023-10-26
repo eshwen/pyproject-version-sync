@@ -117,11 +117,11 @@ def main() -> None:
         if not fix:
             sys.exit(
                 f"In pyproject.toml, found tool.poetry.version = {version_pyproject}. Expected {version_git}. "
-                f"Run with the `--fix` option to automatically update.",
+                f"Run with the `--fix` option to automatically sync.",
             )
 
         write_new_version_to_toml(toml_file, version_pyproject, version_git)
-        sys.exit("Updating version in pyproject.toml to match latest git tag.")
+        sys.exit("Syncing version in pyproject.toml to match latest git tag.")
 
     sys.exit()
 
