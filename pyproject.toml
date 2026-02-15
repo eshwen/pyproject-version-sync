@@ -19,7 +19,7 @@ sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-tomli = "~2.0.1"
+tomlkit = "^0.14.0"
 
 
 [tool.poetry.group.dev.dependencies]

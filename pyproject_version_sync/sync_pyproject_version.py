@@ -1,11 +1,17 @@
 """This pre-commit hook ensures that the version in pyproject.toml matches the latest git tag."""
+
 import argparse
 import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import TypeVar
 
-import tomli
+import tomlkit
+from tomlkit.toml_document import TOMLDocument
+
+PATHS = ["tool.poetry.version", "project.version"]
+T = TypeVar("T")
 
 
 def _execute_in_shell(cmd: str) -> subprocess.CompletedProcess:
@@ -44,45 +50,70 @@ def find_latest_tag() -> str:
     return re.findall(r"^v?(\d+\.\d+\.\d+).*", latest_tag)[0]
 
 
-def find_version_in_toml(toml_file: Path) -> str:
+def traverse(toml: TOMLDocument, path: str, cls: type[T]) -> T | None:
+    """
+    Traverse given toml by a given dotted path and verify found type.
+
+    Args:
+        toml: Toml documet.
+        path: Dotted path, like "a.b.c".
+        cls: Expected class.
+
+    Returns:
+        Object at a given path or None if not found.
+    """
+    try:
+        for part in path.split("."):
+            toml = toml[part]  # type: ignore[assignment]
+
+        if not isinstance(toml, cls):
+            return None
+    except Exception:  # noqa: BLE001
+        return None
+    else:
+        return toml
+
+
+def traverse_set(toml: TOMLDocument, path: str, value: object) -> None:
+    """
+    Traverse given toml by a given dotted path and set value.
+
+    Args:
+        toml: Toml documet.
+        path: Dotted path, like "a.b.c".
+        value: string or int.
+    """
+    parts = path.split(".")
+    inner_path, tail = parts[:-1], parts[-1]
+    for part in inner_path:
+        if nxt := toml.get(part):  # noqa: SIM108
+            toml = nxt
+        else:
+            toml = toml.add(part, {})  # type: ignore[assignment, arg-type]
+
+    toml[tail] = value
+
+
+def find_version_in_toml(pyproject: TOMLDocument) -> tuple[str, str]:
     """
     Find the project version in pyproject.toml.
 
     Args:
-        toml_file: Path to pyproject.toml.
+        pyproject: Parsed pyproject.toml.
 
     Returns:
         Project version.
     """
-    with Path.open(toml_file, "rb") as f:
-        pyproject = tomli.load(f)
+    # If user has invalid values it will error out
+    versions: list[tuple[str, str]] = []
+    for path in PATHS:
+        version = traverse(pyproject, path, str)
+        if version:
+            versions.append((path, version))
 
-    return pyproject["tool"]["poetry"]["version"]
-
-
-def write_new_version_to_toml(toml_file: Path, version_pyproject: str, version_git: str) -> None:
-    """
-    Write the new version to pyproject.toml.
-
-    Args:
-        toml_file: Path to pyproject.toml.
-        version_pyproject: Version in pyproject.toml.
-        version_git: Latest git tag.
-    """
-    pyproject_raw = Path.open(toml_file).read()
-
-    # Ignore all the stuff after the block of interest
-    # Avoids edge case where we may overwrite the version of something else in the file by mistake
-    block = re.findall(
-        rf"\[tool\.poetry\][^\n]*.*\nversion\s?=\s?[\"|\']{re.escape(version_pyproject)}[\"|\']\n",
-        pyproject_raw,
-        flags=re.DOTALL,
-    )[0]
-    new_block = block.replace(version_pyproject, version_git)
-
-    pyproject_new = pyproject_raw.replace(block, new_block)
-    with Path.open(toml_file, "w") as f_out:
-        f_out.write(pyproject_new)
+    if len(versions) != 1:
+        sys.exit(f"Expected exactly one version in pyproject.toml, got: {versions}")
+    return versions[0]
 
 
 def parse_args() -> argparse.Namespace:
@@ -109,9 +140,11 @@ def main() -> None:
     """Run the pre-commit hook."""
     args = parse_args()
     fix = args.fix
-    toml_file = args.toml_file
 
-    version_pyproject = find_version_in_toml(toml_file)
+    path = Path(args.toml_file)
+    pyproject = tomlkit.parse(path.read_bytes())
+
+    version_path, version_pyproject = find_version_in_toml(pyproject)
 
     if version_pyproject != (version_git := find_latest_tag()):
         if not fix:
@@ -120,7 +153,9 @@ def main() -> None:
                 f"Run with the `--fix` option to automatically sync.",
             )
 
-        write_new_version_to_toml(toml_file, version_pyproject, version_git)
+        traverse_set(pyproject, version_path, version_git)
+        tomlkit.dump(pyproject, path.open("w"))
+
         sys.exit("Syncing version in pyproject.toml to match latest git tag.")
 
     sys.exit()
