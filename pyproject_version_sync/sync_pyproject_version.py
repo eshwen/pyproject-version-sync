@@ -8,13 +8,14 @@ from pathlib import Path
 from typing import TypeVar
 
 import tomlkit
+from tomlkit.items import Table
 from tomlkit.toml_document import TOMLDocument
 
 PATHS = ["tool.poetry.version", "project.version"]
 T = TypeVar("T")
 
 
-def _execute_in_shell(cmd: str) -> subprocess.CompletedProcess:
+def _execute_in_shell(cmd: str) -> subprocess.CompletedProcess[bytes]:
     return subprocess.run(cmd.split(), check=True, capture_output=True)  # noqa: S603
 
 
@@ -50,6 +51,20 @@ def find_latest_tag() -> str:
     return re.findall(r"^v?(\d+\.\d+\.\d+).*", latest_tag)[0]
 
 
+def extract_prefix_and_tail(path: str) -> tuple[list[str], str]:
+    """
+    Split a given dotted path into prefix and the last element.
+
+    Args:
+        path: Dotted path, like "a.b.c".
+
+    Returns:
+        Tuple of prefix and the last element.
+    """
+    parts = path.split(".")
+    return parts[:-1], parts[-1]
+
+
 def traverse(toml: TOMLDocument, path: str, cls: type[T]) -> T | None:
     """
     Traverse given toml by a given dotted path and verify found type.
@@ -62,36 +77,44 @@ def traverse(toml: TOMLDocument, path: str, cls: type[T]) -> T | None:
     Returns:
         Object at a given path or None if not found.
     """
-    try:
-        for part in path.split("."):
-            toml = toml[part]  # type: ignore[assignment]
+    prefix, tail = extract_prefix_and_tail(path)
 
-        if not isinstance(toml, cls):
+    root: Table | TOMLDocument = toml
+    for part in prefix:
+        next_root = root.get(part)
+        if not isinstance(next_root, Table):
             return None
-    except Exception:  # noqa: BLE001
+        root = next_root
+
+    result = root.get(tail)
+    if not isinstance(result, cls):
         return None
-    else:
-        return toml
+    return result
 
 
-def traverse_set(toml: TOMLDocument, path: str, value: object) -> None:
+def traverse_set(toml: TOMLDocument, path: str, value: object) -> bool:
     """
-    Traverse given toml by a given dotted path and set value.
+    Traverse given toml by a given dotted path and set the value, overwrite if it exists already.
 
     Args:
         toml: Toml documet.
         path: Dotted path, like "a.b.c".
         value: string or int.
-    """
-    parts = path.split(".")
-    inner_path, tail = parts[:-1], parts[-1]
-    for part in inner_path:
-        if nxt := toml.get(part):  # noqa: SIM108
-            toml = nxt
-        else:
-            toml = toml.add(part, {})  # type: ignore[assignment, arg-type]
 
-    toml[tail] = value
+    Returns:
+        Success status.
+    """
+    prefix, tail = extract_prefix_and_tail(path)
+
+    root: Table | TOMLDocument = toml
+    for part in prefix:
+        next_root = root.setdefault(part, {})
+        if not isinstance(next_root, Table):
+            return False
+        root = next_root
+
+    root[tail] = value
+    return True
 
 
 def find_version_in_toml(pyproject: TOMLDocument) -> tuple[str, str]:
@@ -153,7 +176,8 @@ def main() -> None:
                 f"Run with the `--fix` option to automatically sync.",
             )
 
-        traverse_set(pyproject, version_path, version_git)
+        # This path should exist
+        assert traverse_set(pyproject, version_path, version_git)  # noqa: S101
         tomlkit.dump(pyproject, path.open("w"))
 
         sys.exit("Syncing version in pyproject.toml to match latest git tag.")
