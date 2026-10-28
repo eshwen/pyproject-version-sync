@@ -32,7 +32,7 @@ lint = [
     "ruff>=0.17.3,<0.18",
 ]
 type = [
-    "mypy>=1.6.1,<1.7",
+    "pyrefly~=1.4.0",
 ]
 
 
@@ -152,28 +152,16 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 
-[tool.mypy]
-python_version = "3.11"
-pretty = true
-show_traceback = true
-color_output = true
-allow_redefinition = false
-check_untyped_defs = true
-disallow_any_generics = true
-allow_untyped_defs = false
-allow_incomplete_defs = false
-ignore_missing_imports = true
-disable_error_code = "type-arg"
-implicit_reexport = true
-no_implicit_optional = true
-show_column_numbers = true
-show_error_codes = true
-show_error_context = true
-strict_equality = true
-strict_optional = false
-warn_no_return = true
-warn_redundant_casts = true
-warn_return_any = false
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
+[tool.pyrefly]
+preset = "strict"
+project-includes = ["pyproject_version_sync"]
+python-interpreter-path = ".venv/bin/python3"
+python-version = "3.11"
+
+
+[tool.pyrefly.errors]
+implicit-any-type-argument = "ignore"
+missing-override-decorator = "ignore"
+missing-source = "warn"
+string-as-iterable = "warn"
+unannotated-return = "error"
