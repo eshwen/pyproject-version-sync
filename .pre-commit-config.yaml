@@ -3,6 +3,8 @@ default_language_version:
 
 default_stages: [ pre-commit, pre-push,commit, push ]
 
+default_install_hook_types: [ pre-commit, pre-push, post-checkout, post-merge, post-rewrite ]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -17,14 +19,14 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.1.2'  # Try to match poetry.lock version
+    rev: 'v0.1.15'  # Try to match uv.lock version
     hooks:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix ]
         types_or: [ python, pyi, jupyter ]
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.10.1  # Try to match poetry.lock version
+    rev: 23.10.1  # Try to match uv.lock version
     hooks:
       - id: black
 
@@ -34,13 +36,12 @@ repos:
       - id: auto-walrus
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.6.1  # Try to match poetry.lock version
+    rev: v1.6.1  # Try to match uv.lock version
     hooks:
       - id: mypy
 
-  - repo: https://github.com/python-poetry/poetry
-    rev: '1.6.1'
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.5
     hooks:
-      - id: poetry-check
-      - id: poetry-lock
-        args: [ --no-update ]
+      - id: uv-lock
+      - id: uv-sync

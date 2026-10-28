@@ -1,32 +1,48 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.27.0,<2"]
+build-backend = "hatchling.build"
 
 
-[tool.poetry]
+[project]
 name = "pyproject-version-sync"
 version = "0.2.1"
 description = "Pre-commit hook to align the pyproject.toml version to the latest tag in the repo."
-authors = [
-    "Eshwen Bhal, PhD <milanman.eshb@gmail.com>"
-]
 readme = "README.md"
+authors = [
+    { name = "Eshwen Bhal, PhD", email = "milanman.eshb@gmail.com" },
+]
+requires-python = ">=3.11"
+dependencies = [
+    "tomli>=2.0.1,<2.1",
+]
 
 
-[tool.poetry.scripts]
+[project.scripts]
 sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:main"
 
 
-[tool.poetry.dependencies]
-python = "^3.11"
-tomli = "~2.0.1"
+[dependency-groups]
+dev = [
+    { include-group = "lint" },
+    { include-group = "type" },
+]
+
+lint = [
+    "black>=26.3.1,<26.11.0",
+    "pre-commit>=3.5.0,<3.6",
+    "ruff>=0.1.2,<0.2",
+]
+type = [
+    "mypy>=1.6.1,<1.7",
+]
 
 
-[tool.poetry.group.dev.dependencies]
-black = ">=26.3.1,<26.11.0"
-mypy = "~1.6.1"
-ruff = "~0.1.2"
-pre-commit = "~3.5.0"
+[tool.uv]
+required-version = ">=0.13.0,<0.14"
+
+
+[tool.hatch.build.targets.sdist]
+include = ["/pyproject_version_sync"]
 
 
 [tool.black]
