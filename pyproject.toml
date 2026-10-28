@@ -26,11 +26,16 @@ sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:sync_pyp
 dev = [
     { include-group = "lint" },
     { include-group = "type" },
+    { include-group = "test" },
 ]
 
 lint = [
     "pre-commit>=4.7.0,<5",
     "ruff>=0.17.3,<0.18",
+]
+test = [
+    "pytest~=9.1.0",
+    "pytest-cov~=7.1.0",
 ]
 type = [
     "pyrefly~=1.4.0",
@@ -139,6 +144,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "D104"]
+"tests/**/*.py" = ["S101", "S603", "S607", "D103", "PLR2004"]
 
 
 [tool.ruff.lint.pydocstyle]
@@ -151,6 +157,18 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+
+[tool.pytest]
+minversion = "9.0"
+addopts = ["--cov"]
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+
+
+[tool.coverage.run]
+branch = true
+source = ["pyproject_version_sync"]
 
 
 [tool.pyrefly]
