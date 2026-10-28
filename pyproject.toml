@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyproject-version-sync"
-version = "0.2.1"
+version = "0.4.0"
 description = "Pre-commit hook to align the pyproject.toml version to the latest tag in the repo."
 readme = "README.md"
 authors = [

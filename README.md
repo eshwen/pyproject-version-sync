@@ -16,7 +16,7 @@ your `.pre-commit-config.yaml`:
 
 ```yaml
   - repo: https://github.com/eshwen/pyproject-version-sync
-    rev: v0.2.1
+    rev: v0.4.0
     hooks:
       - id: pyproject-version-sync
 ```
@@ -25,7 +25,7 @@ Or, to enable autofix:
 
 ```yaml
   - repo: https://github.com/eshwen/pyproject-version-sync
-    rev: v0.2.1
+    rev: v0.4.0
     hooks:
       - id: pyproject-version-sync
         args: [--fix]
