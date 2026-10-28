@@ -41,6 +41,6 @@ Tests live in `tests/` and run against real temporary git repos. The `git_repo` 
 
 - The README's usage examples pin `rev: v0.2.1`. When releasing, bump `project.version`, tag the release, and update those README `rev:` values.
 - The comments in `.pre-commit-config.yaml` say tool revisions should match `uv.lock`. Dependency bumps to `pyproject.toml`/`uv.lock` don't update the pre-commit revs, so they drift.
-- CI is `.github/workflows/test.yml` (pytest on Python 3.11–3.15) and `quality-check.yml` (ruff and pyrefly). Neither has steps of its own: both call reusable workflows from [eshwen/adrenaline](https://github.com/eshwen/adrenaline), pinned to a tag. A new Python version needs adding to the `test.yml` matrix by hand.
+- CI is `.github/workflows/test.yml` (pytest on Python 3.11–3.15) and `quality-check.yml` (ruff and pyrefly). Neither has steps of its own: both call reusable workflows from [eshwen/adrenaline](https://github.com/eshwen/adrenaline), pinned to a tag. Dependabot opens monthly PRs to bump those tags and other action versions. A new Python version needs adding to the `test.yml` matrix by hand.
 - `auto-walrus` runs in pre-commit and rewrites assignments into walrus expressions where it can.
 - `.claude/settings.json` sets up two Claude Code hooks. Any Bash call that runs `git commit` first runs `.claude/hooks/require-pre-commit.sh`, which runs `uv run pre-commit run --all-files` and blocks the commit if it fails. Every `.py` file Claude writes or edits is formatted with `ruff format` afterwards.
