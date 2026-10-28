@@ -103,7 +103,6 @@ def cli(
     """
     Update version in pyproject.toml to match latest git tag.
 
-    \f
     Args:
         toml_file: Path to pyproject.toml.
         fix: If set, automatically update the version in pyproject.toml to match the latest git tag.
