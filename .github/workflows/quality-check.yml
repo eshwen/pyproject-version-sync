@@ -1,0 +1,22 @@
+name: Check Quality
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: check-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    uses: eshwen/adrenaline/.github/workflows/python-quality-check-uv.yml@v0.10.0
+    with:
+      type-checker: pyrefly

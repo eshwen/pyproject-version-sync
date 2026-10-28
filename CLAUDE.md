@@ -27,7 +27,7 @@ uv run --project /path/to/pyproject-version-sync sync_pyproject_version pyprojec
 
 To try the hook from another repo without publishing a tag, run `pre-commit try-repo /path/to/pyproject-version-sync pyproject-version-sync` from that repo.
 
-Tests live in `tests/` and run against real temporary git repos. The `git_repo` and `tag_new_commit` fixtures in `tests/conftest.py` ignore the user's git config and give each tagged commit a distinct timestamp, because `git rev-list --tags` sorts by commit date and commits made in the same second tie. pytest isn't part of pre-commit, so run it yourself. The `name-tests-test --pytest-test-first` pre-commit hook means test files must be named `test_*.py`.
+Tests live in `tests/` and run against real temporary git repos. The `git_repo` and `tag_new_commit` fixtures in `tests/conftest.py` ignore the user's git config and give each tagged commit a distinct timestamp, because `git rev-list --tags` sorts by commit date and commits made in the same second tie. pytest isn't part of pre-commit, so run it yourself before pushing; CI runs it too. The `name-tests-test --pytest-test-first` pre-commit hook means test files must be named `test_*.py`.
 
 ## How it works
 
@@ -41,5 +41,6 @@ Tests live in `tests/` and run against real temporary git repos. The `git_repo` 
 
 - The README's usage examples pin `rev: v0.2.1`. When releasing, bump `project.version`, tag the release, and update those README `rev:` values.
 - The comments in `.pre-commit-config.yaml` say tool revisions should match `uv.lock`. Dependency bumps to `pyproject.toml`/`uv.lock` don't update the pre-commit revs, so they drift.
+- CI is `.github/workflows/test.yml` (pytest on Python 3.11–3.15) and `quality-check.yml` (ruff and pyrefly). Neither has steps of its own: both call reusable workflows from [eshwen/adrenaline](https://github.com/eshwen/adrenaline), pinned to a tag. A new Python version needs adding to the `test.yml` matrix by hand.
 - `auto-walrus` runs in pre-commit and rewrites assignments into walrus expressions where it can.
 - `.claude/settings.json` sets up two Claude Code hooks. Any Bash call that runs `git commit` first runs `.claude/hooks/require-pre-commit.sh`, which runs `uv run pre-commit run --all-files` and blocks the commit if it fails. Every `.py` file Claude writes or edits is formatted with `ruff format` afterwards.

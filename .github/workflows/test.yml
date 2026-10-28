@@ -1,0 +1,28 @@
+name: Test
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: test-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      # Report every version that fails, not just the first
+      fail-fast: false
+      matrix:
+        python-version: [ "3.11", "3.12", "3.13", "3.14", "3.15" ]
+    uses: eshwen/adrenaline/.github/workflows/python-test-uv.yml@v0.10.0
+    with:
+      pkg-name: pyproject_version_sync
+      python-version: ${{ matrix.python-version }}
