@@ -18,7 +18,7 @@ sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:main"
 
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 tomli = "~2.0.1"
 
 
@@ -30,7 +30,7 @@ pre-commit = "~3.5.0"
 
 
 [tool.black]
-target-version = ['py310']
+target-version = ['py311']
 line-length = 120
 
 
@@ -133,7 +133,7 @@ convention = "google"
 
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 pretty = true
 show_traceback = true
 color_output = true
