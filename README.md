@@ -1,6 +1,6 @@
 # pyproject-version-sync
 
-![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14%20%7C%203.15-blue?logo=Python&logoColor=yellow&link=https%3A%2F%2Fwww.python.org%2F)
+[![Python]](https://python.org)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -42,3 +42,5 @@ With autofix:
 ![fix](https://github.com/eshwen/pyproject-version-sync/assets/24566108/52be8c2c-c26d-4749-a746-255c9dae2c33)
 
 (Styling shamelessly nicked from <https://github.com/ines/termynal>. Check out that repo for cool terminal animations!)
+
+[Python]: https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14%20%7C%203.15-blue?logo=Python&logoColor=yellow&link=https%3A%2F%2Fwww.python.org%2F
