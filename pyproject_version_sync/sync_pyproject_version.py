@@ -1,4 +1,5 @@
 """This pre-commit hook ensures that the version in pyproject.toml matches the latest git tag."""
+
 import argparse
 import re
 import subprocess
