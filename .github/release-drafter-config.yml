@@ -1,0 +1,85 @@
+name-template: 'v$RESOLVED_VERSION 🌈'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '🚨 Breaking Changes'
+    labels:
+      - 'breaking'
+      - 'major'
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '🧰 Maintenance'
+    labels:
+      - 'documentation'
+      - 'testing'
+  - title: '⬆️ Dependencies'
+    collapse-after: 3
+    labels:
+      - 'dependencies'
+      - 'github_actions'
+  - title: '🏠 Internal'
+    collapse-after: 3
+    labels:
+      - 'internal'
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+      - 'breaking'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  default: patch
+
+autolabeler:
+  - label: 'documentation'
+    files:
+      - 'README.md'
+    branch:
+      - '/docs{0,1}\/.+/'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+  - label: 'github_actions'
+    files:
+      - '.github/**'
+  - label: 'dependencies'
+    files:
+      - 'uv.lock'
+  - label: 'pre_commit'
+    files:
+      - '.pre-commit-config.yaml'
+  - label: 'testing'
+    files:
+      - 'tests/**'
+  - label: 'claude'
+    files:
+      - '.claude/**'
+      - 'CLAUDE.md'
+
+template: |
+  ## Changes
+
+  $CHANGES
