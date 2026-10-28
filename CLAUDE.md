@@ -11,11 +11,12 @@ A [pre-commit](https://pre-commit.com/) hook that checks that `tool.poetry.versi
 Dependencies are managed with uv (Python >=3.11, uv 0.13.x), and the build backend is hatchling:
 
 ```bash
-uv sync                                      # install with dev deps (the `dev` group includes lint/type)
+uv sync                                      # install with dev deps (the `dev` group includes lint/type/test)
 uv run pre-commit run --all-files            # run every lint/format/type check
 uv run ruff check --fix .                    # lint (wide rule set; Google-style docstrings required)
 uv run ruff format .                         # format (line length 120)
 uv run pyrefly check pyproject_version_sync  # type check (strict preset)
+uv run pytest                                # run the tests, with branch coverage
 ```
 
 Run the hook against a Poetry project's pyproject.toml. It reads tags from the git repo in the current working directory. This repo's own `pyproject.toml` uses `[project]`, not `[tool.poetry]`, so the hook can't check it.
@@ -26,7 +27,7 @@ uv run --project /path/to/pyproject-version-sync sync_pyproject_version pyprojec
 
 To try the hook from another repo without publishing a tag, run `pre-commit try-repo /path/to/pyproject-version-sync pyproject-version-sync` from that repo.
 
-There is no test suite. The `name-tests-test --pytest-test-first` pre-commit hook means any test files you add must be named `test_*.py`.
+Tests live in `tests/` and run against real temporary git repos. The `git_repo` and `tag_new_commit` fixtures in `tests/conftest.py` ignore the user's git config and give each tagged commit a distinct timestamp, because `git rev-list --tags` sorts by commit date and commits made in the same second tie. pytest isn't part of pre-commit, so run it yourself. The `name-tests-test --pytest-test-first` pre-commit hook means test files must be named `test_*.py`.
 
 ## How it works
 
