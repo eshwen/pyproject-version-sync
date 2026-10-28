@@ -1,13 +1,13 @@
 default_language_version:
   python: python3.11
 
-default_stages: [ pre-commit, pre-push,commit, push ]
+default_stages: [ pre-commit, pre-push ]
 
 default_install_hook_types: [ pre-commit, pre-push, post-checkout, post-merge, post-rewrite ]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-shebang-scripts-are-executable
@@ -26,17 +26,18 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/MarcoGorelli/auto-walrus
-    rev: v0.2.2
+    rev: 0.4.1
     hooks:
       - id: auto-walrus
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.6.1  # Try to match uv.lock version
+  - repo: https://github.com/facebook/pyrefly-pre-commit
+    rev: 1.4.0  # Note: this is the version of the pre-commit hook, NOT the pyrefly version used for type checking
     hooks:
-      - id: mypy
+      - id: pyrefly-check
+        pass_filenames: false
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.13.5
+    rev: 0.13.6
     hooks:
       - id: uv-lock
       - id: uv-sync
