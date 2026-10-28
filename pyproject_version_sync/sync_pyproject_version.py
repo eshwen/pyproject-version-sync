@@ -1,12 +1,12 @@
 """This pre-commit hook ensures that the version in pyproject.toml matches the latest git tag."""
 
-import argparse
 import re
 import subprocess
-import sys
 from pathlib import Path
+from typing import Annotated
 
 import tomli
+import typer
 
 
 def _execute_in_shell(cmd: str) -> subprocess.CompletedProcess:
@@ -86,46 +86,45 @@ def write_new_version_to_toml(toml_file: Path, version_pyproject: str, version_g
         f_out.write(pyproject_new)
 
 
-def parse_args() -> argparse.Namespace:
+sync_pyproject_version = typer.Typer(add_completion=False)
+
+
+@sync_pyproject_version.command(context_settings={"help_option_names": ["-h", "--help"]})
+def cli(
+    toml_file: Annotated[Path, typer.Argument(exists=True, dir_okay=False, help="Path to pyproject.toml.")],
+    fix: Annotated[
+        bool,
+        typer.Option(
+            "--fix",
+            help="If set, automatically update the version in pyproject.toml to match the latest git tag.",
+        ),
+    ] = False,
+) -> None:
     """
-    Parse command line arguments.
+    Update version in pyproject.toml to match latest git tag.
 
-    Returns:
-        Parsed arguments.
+    Args:
+        toml_file: Path to pyproject.toml.
+        fix: If set, automatically update the version in pyproject.toml to match the latest git tag.
+
+    Raises:
+        Exit: With a non-zero exit code if the versions don't match, whether or not they were fixed.
     """
-    parser = argparse.ArgumentParser(
-        description="Update version in pyproject.toml to match latest git tag.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    parser.add_argument("toml_file", type=Path, help="Path to pyproject.toml.")
-    parser.add_argument(
-        "--fix",
-        action="store_true",
-        help="If set, automatically update the version in pyproject.toml to match the latest git tag.",
-    )
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Run the pre-commit hook."""
-    args = parse_args()
-    fix = args.fix
-    toml_file = args.toml_file
-
     version_pyproject = find_version_in_toml(toml_file)
 
     if version_pyproject != (version_git := find_latest_tag()):
         if not fix:
-            sys.exit(
+            typer.echo(
                 f"In pyproject.toml, found tool.poetry.version = {version_pyproject}. Expected {version_git}. "
                 f"Run with the `--fix` option to automatically sync.",
+                err=True,
             )
+            raise typer.Exit(code=1)
 
         write_new_version_to_toml(toml_file, version_pyproject, version_git)
-        sys.exit("Syncing version in pyproject.toml to match latest git tag.")
-
-    sys.exit()
+        typer.echo("Syncing version in pyproject.toml to match latest git tag.", err=True)
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
-    main()
+    sync_pyproject_version()

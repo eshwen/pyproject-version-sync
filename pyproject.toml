@@ -14,11 +14,12 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "tomli>=2.5.0,<2.6",
+    "typer>=0.27.2,<0.28",
 ]
 
 
 [project.scripts]
-sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:main"
+sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:sync_pyproject_version"
 
 
 [dependency-groups]
