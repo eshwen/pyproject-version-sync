@@ -19,7 +19,7 @@ dependencies = [
 
 
 [project.scripts]
-sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:main"
+sync_pyproject_version = "pyproject_version_sync.sync_pyproject_version:sync_pyproject_version"
 
 
 [dependency-groups]

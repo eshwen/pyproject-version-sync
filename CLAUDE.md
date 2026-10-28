@@ -30,7 +30,7 @@ There is no test suite. The `name-tests-test --pytest-test-first` pre-commit hoo
 
 ## How it works
 
-- **Wiring:** `.pre-commit-hooks.yaml` defines the hook `pyproject-version-sync`, whose `entry` is the console script `sync_pyproject_version`. `[project.scripts]` in `pyproject.toml` maps that script to `main()`. The hook only fires when `^pyproject\.toml$` is among the changed files, and pre-commit passes that path as the positional `toml_file` argument.
+- **Wiring:** `.pre-commit-hooks.yaml` defines the hook `pyproject-version-sync`, whose `entry` is the console script `sync_pyproject_version`. `[project.scripts]` in `pyproject.toml` maps that script to the Typer app `sync_pyproject_version`, whose single command is `cli()`. The hook only fires when `^pyproject\.toml$` is among the changed files, and pre-commit passes that path as the positional `toml_file` argument.
 - **Latest tag:** `git rev-list --tags --max-count=1` gives the most recently tagged commit, and `git describe --tags` on that commit gives the tag name. The regex `^v?(\d+\.\d+\.\d+)` takes the version from it, so a leading `v` and any suffix such as `-rc1` are dropped. A tag that isn't strict `X.Y.Z` raises `IndexError`.
 - **Reading the version:** the file is parsed with `tomli`, and only `[tool.poetry].version` is read. PEP 621 `[project].version` isn't supported.
 - **Writing the version (`--fix`):** the file is edited as raw text rather than re-serialised, so formatting and comments are kept. A regex finds the `[tool.poetry]` header and the first `version = "..."` line after it, and the replacement happens only inside that span, so other `version` keys in the file aren't touched.
