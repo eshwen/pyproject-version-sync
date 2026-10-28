@@ -69,19 +69,23 @@ def write_new_version_to_toml(toml_file: Path, version_pyproject: str, version_g
         toml_file: Path to pyproject.toml.
         version_pyproject: Version in pyproject.toml.
         version_git: Latest git tag.
+
+    Raises:
+        ValueError: If no `version` key is found in the `[tool.poetry]` table.
     """
     pyproject_raw = Path.open(toml_file).read()
 
-    # Ignore all the stuff after the block of interest
-    # Avoids edge case where we may overwrite the version of something else in the file by mistake
-    block = re.findall(
-        rf"\[tool\.poetry\][^\n]*.*\nversion\s?=\s?[\"|\']{re.escape(version_pyproject)}[\"|\']\n",
+    # Only skip lines that don't start a new table, so the match can't run past the end of [tool.poetry]
+    # and overwrite the version of something else in the file by mistake
+    pyproject_new, n_subs = re.subn(
+        rf"(\[tool\.poetry\][^\n]*\n(?:(?!\[)[^\n]*\n)*?version\s?=\s?[\"']){re.escape(version_pyproject)}([\"'])",
+        rf"\g<1>{version_git}\g<2>",
         pyproject_raw,
-        flags=re.DOTALL,
-    )[0]
-    new_block = block.replace(version_pyproject, version_git)
+        count=1,
+    )
+    if not n_subs:
+        raise ValueError(f"Could not find version = {version_pyproject!r} in the [tool.poetry] table of {toml_file}.")
 
-    pyproject_new = pyproject_raw.replace(block, new_block)
     with Path.open(toml_file, "w") as f_out:
         f_out.write(pyproject_new)
 
